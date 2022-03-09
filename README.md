@@ -179,3 +179,127 @@ Nmap is a network scanner created by Gordon Lyon. Nmap is used to discover hosts
 ```
 nmap -A -traceroute -O 0.0.0.1/24
 ```
+
+## vi
+
+vi is a screen-oriented text editor originally created for the Unix operating system.
+
+Find ad Replace
+
+```
+:%s/^foo*/bar/gc
+```
+
+: Function
+% Global
+s find / replace
+/^foo* find string
+/bar/ replace string
+gc 
+
+## SSH
+
+Create and setup an Public and Private RSA key.
+```
+ssh-keygen -t rsa
+
+ssh-agent bash
+
+ssh-add ~/.ssh/id_rsa
+```
+
+To use the ssh-copy-id utility, to connect to, and copy a public yer to the remote device user account that you require SSH access to.
+```
+ssh-copy-id username@remote_host
+```
+
+## nmcli
+
+nmcli is a command-line tool for controlling NetworkManager and reporting network status. It can be utilized as a replacement for nm-applet or other graphical clients. nmcli is used to create, display, edit, delete, activate, and deactivate network connections, as well as control and display network device status.
+
+The -a flag will ask you to enter the WiFi password.
+
+```
+nmcli -a device wifi connect [wifiname]
+```
+
+Get the connection name, run below nmcli command to assign static ipv4 address.
+
+```
+nmcli connection
+nmcli con mod 'eth0' ipv4.address 0.0.0.0/24
+nmcli con mod 'eth0' ipv4.gateway 0.0.0.0
+nmcli con mod 'eth0' ipv4.method manual
+nmcli con mod 'eth0' ipv4.dns '0.0.0.0'
+nmcli connection down eth0
+nmcli connection up eth0
+ip add show eth0
+nmcli -p con show 'eth0'
+```
+
+
+## Podman, Buildah & Quay
+
+Download an image
+```
+buildah from 'name'  
+```
+View a download image
+```
+buildah images
+```
+View a container
+```
+buildah containers
+```
+Copy stuff into a conainer image
+``` 
+buildah copy name-working-container /home/1.rpm /home/1.rpm
+```    
+Updates and install package
+```
+buildah run name-working-container -- dnf update -y
+buildah run name-working-container -- dnf install -y package
+```
+Commit conainer image
+```
+buildah commit name-working-container new-name
+```
+Login to a Container Registry (i.e. Quay.io)
+```
+buildah login quay.io
+``` 
+Push the container to a Container Regisrey (i.e Quay.io)
+```
+buildah push localhost/name:latest quay.io/account/name:latest
+``` 
+Import the container image from a custom registry (i.e. Quay.io)
+```
+buildah from --name=local-name quay.io/account/name:latest
+```
+Run a container image and connect to the shell
+``` 
+podman run -it quay.io/repo/imagename /bin/bash
+```
+Run a container image with Network Privs
+``` 
+podman run -it --cap-add=NET_ADMIN quay.io/repo/imagename
+```
+The Podman ps command is used to list creating and running containers.
+```
+podman ps
+```
+You can "inspect" a running container for metadata and details about itself.
+```
+podman inspect -l | grep IPAddress\":
+"SecondaryIPAddresses": null,
+"IPAddress": "",
+```
+View the container's logs:
+```
+podman logs --latest
+```
+Stop the last started container:
+```
+podman stop --latest
+```
